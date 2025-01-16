@@ -9,8 +9,8 @@ const Contact = () => {
   useEffect(() => {
     AOS.init({
       duration: 800,
-      once: false, // Esto permite que las animaciones se repitan al hacer scroll hacia arriba
-      mirror: true, // Esto hace que las animaciones se reviertan al hacer scroll hacia arriba
+      once: false,
+      mirror: true,
     });
   }, []);
 
@@ -80,8 +80,6 @@ const Contact = () => {
                 <button
                   type="submit"
                   className="w-full px-6 py-3 text-white font-semibold rounded-full bg-primary-gradient hover:shadow-lg transition-all duration-300"
-                  data-aos="fade-up"
-                  data-aos-delay="600"
                 >
                   Enviar mensaje
                 </button>

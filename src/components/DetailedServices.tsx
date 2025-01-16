@@ -1,12 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import * as Icons from 'lucide-react';
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AnimatedServiceMessage from './services/AnimatedServiceMessage';
-import ServicesList from './services/ServicesList';
 import { services, ServiceDetail } from '@/types/services';
 
 const DetailedServices = () => {
@@ -29,50 +28,81 @@ const DetailedServices = () => {
   };
 
   const handleServiceChange = (direction: 'prev' | 'next') => {
-    const submenuContent = activeService.submenuContent || {};
-    const tabKeys = Object.keys(submenuContent);
-    const currentIndex = tabKeys.indexOf(activeTab);
     const newIndex = direction === 'next' 
-      ? (currentIndex + 1) % tabKeys.length
-      : (currentIndex - 1 + tabKeys.length) % tabKeys.length;
+      ? (currentServiceIndex + 1) % services.length
+      : (currentServiceIndex - 1 + services.length) % services.length;
     
-    setActiveTab(tabKeys[newIndex]);
+    setCurrentServiceIndex(newIndex);
+    setActiveService(services[newIndex]);
+    setActiveTab(Object.keys(services[newIndex].submenuContent || {})[0]);
   };
 
   return (
     <section id="services-section" className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-white">
       <div className="container mx-auto px-4 pt-20">
         <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
-          {/* Sidebar para desktop */}
-          <div 
-            className="hidden lg:block w-full lg:w-1/4 bg-white rounded-lg shadow-lg p-4 lg:sticky lg:top-24 h-fit"
-            data-aos="fade-right"
-            data-aos-duration="800"
-          >
-            <ServicesList 
-              services={services}
-              activeService={activeService}
-              onServiceClick={(service) => {
-                const index = services.findIndex(s => s.id === service.id);
-                setCurrentServiceIndex(index);
-                setActiveService(service);
-                setActiveTab(Object.keys(service.submenuContent || {})[0]);
-              }}
-            />
-          </div>
-
           {/* Contenido principal */}
           <div 
-            className="w-full lg:w-3/4 p-4 md:p-6 bg-white rounded-lg shadow-lg"
+            className="w-full p-4 md:p-6 bg-white rounded-lg shadow-lg relative"
             data-aos="fade-left"
             data-aos-duration="800"
             data-aos-delay="400"
           >
+            {/* Botones de navegación para desktop */}
+            <div className="hidden lg:flex justify-between absolute top-1/2 -translate-y-1/2 w-full left-0 px-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleServiceChange('prev')}
+                className="bg-white/80 hover:bg-white shadow-lg"
+              >
+                <ChevronLeft className="h-6 w-6 text-primary" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleServiceChange('next')}
+                className="bg-white/80 hover:bg-white shadow-lg"
+              >
+                <ChevronRight className="h-6 w-6 text-primary" />
+              </Button>
+            </div>
+
             {/* Título para desktop */}
             <h2 className="hidden lg:flex text-2xl font-bold mb-6 items-center justify-center text-gray-800">
               {activeService.iconName && renderIcon(activeService.iconName)}
               <span className="ml-3">{activeService.title}</span>
             </h2>
+
+            {/* Título para móvil */}
+            <div className="lg:hidden relative flex items-center justify-center mb-8">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleServiceChange('prev')}
+                className="absolute -top-12 left-1/2 -translate-x-1/2 animate-bounce-slow"
+              >
+                <ChevronUp className="h-6 w-6" />
+              </Button>
+
+              <div className="flex flex-col items-center">
+                <div className="text-primary mb-2">
+                  {activeService.iconName && renderIcon(activeService.iconName)}
+                </div>
+                <h3 className="text-xl font-bold text-gray-800">
+                  {activeService.title}
+                </h3>
+              </div>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleServiceChange('next')}
+                className="absolute -bottom-12 left-1/2 -translate-x-1/2 animate-bounce-slow"
+              >
+                <ChevronDown className="h-6 w-6" />
+              </Button>
+            </div>
 
             {activeService.hasSubmenus && activeService.submenuContent ? (
               <div className="max-w-2xl mx-auto relative">
@@ -82,15 +112,6 @@ const DetailedServices = () => {
                   className="w-full"
                 >
                   <div className="relative flex items-center justify-center mb-8">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleServiceChange('prev')}
-                      className="absolute left-0 animate-bounce-up-down"
-                    >
-                      <ChevronUp className="h-6 w-6" />
-                    </Button>
-
                     <TabsList className="w-full max-w-[200px]">
                       {Object.entries(activeService.submenuContent).map(([key, content]) => (
                         <TabsTrigger 
@@ -107,15 +128,6 @@ const DetailedServices = () => {
                         </TabsTrigger>
                       ))}
                     </TabsList>
-
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleServiceChange('next')}
-                      className="absolute right-0 animate-bounce-up-down"
-                    >
-                      <ChevronDown className="h-6 w-6" />
-                    </Button>
                   </div>
                   
                   {Object.entries(activeService.submenuContent).map(([key, content]) => (

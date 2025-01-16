@@ -1,13 +1,15 @@
-import type { Config } from "tailwindcss";
+import type { Config } from "tailwindcss"
+import { fontFamily } from "tailwindcss/defaultTheme"
+import plugin from "tailwindcss/plugin"
 
-export default {
+const config = {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
-  ],
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+	],
   prefix: "",
   theme: {
     container: {
@@ -19,76 +21,98 @@ export default {
     },
     extend: {
       fontFamily: {
-        montserrat: ["Montserrat", "sans-serif"],
-        inter: ["Inter", "sans-serif"],
+        inter: ['Inter', ...fontFamily.sans],
+        montserrat: ['Montserrat', ...fontFamily.sans],
       },
       colors: {
-        primary: {
-          DEFAULT: "#ff7744",
-          light: "#ffb944",
-        },
-        secondary: "#e0e0e0",
-        accent: "#F59E0B",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "#ff7744",
+          light: "#ffb944",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
-        "fade-in": {
-          "0%": { 
-            opacity: "0",
-            transform: "translateY(20px)"
-          },
-          "100%": { 
-            opacity: "1",
-            transform: "translateY(0)"
-          },
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
-        "slide-down": {
-          "0%": { transform: "translateY(-100%)" },
-          "100%": { transform: "translateY(0)" },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
-        "gradient-flow": {
+        "bounce-slow": {
           "0%, 100%": {
-            "background-position": "0% 50%",
+            transform: "translateY(-10%)",
+            animationTimingFunction: "cubic-bezier(0.8, 0, 1, 1)",
           },
           "50%": {
-            "background-position": "100% 50%",
-          },
-        },
-        "bounce-right": {
-          "0%, 100%": {
-            transform: "translateX(0)",
-          },
-          "50%": {
-            transform: "translateX(4px)",
-          },
-        },
-        "bounce-up-down": {
-          "0%, 100%": {
             transform: "translateY(0)",
-          },
-          "50%": {
-            transform: "translateY(-4px)",
+            animationTimingFunction: "cubic-bezier(0, 0, 0.2, 1)",
           },
         },
       },
       animation: {
-        "fade-in": "fade-in 0.5s ease-out",
-        "slide-down": "slide-down 0.5s ease-out",
-        "gradient-flow": "gradient-flow 4s ease-in-out infinite",
-        "bounce-right": "bounce-right 1s ease-in-out infinite",
-        "bounce-up-down": "bounce-up-down 1s ease-in-out infinite",
-      },
-      rotate: {
-        'y-180': '180deg',
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "bounce-slow": "bounce-slow 2s infinite",
       },
       backgroundImage: {
         'primary-gradient': 'linear-gradient(to right, #ff7744, #ffb944)',
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
-} satisfies Config;
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        '.scrollbar-hide': {
+          /* IE and Edge */
+          '-ms-overflow-style': 'none',
+          /* Firefox */
+          'scrollbar-width': 'none',
+          /* Safari and Chrome */
+          '&::-webkit-scrollbar': {
+            display: 'none'
+          }
+        }
+      })
+    })
+  ],
+} satisfies Config
+
+export default config

@@ -26,8 +26,8 @@ const Footer = () => {
             <h4 className="font-bold mb-4">Contacto</h4>
             <ul className="space-y-2 text-gray-400">
               <li>info@pixelspark.com</li>
-              <li>+34 900 123 456</li>
-              <li>Madrid, España</li>
+              <li>+596 0962098467</li>
+              <li>Quito, Ecuador</li>
             </ul>
           </div>
           
